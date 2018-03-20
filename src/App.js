@@ -27,25 +27,55 @@ class App extends Component {
     this.byYear = this.byYear.bind( this );
     this.deleteBuyer = this.deleteBuyer.bind( this );
   }
-
+  componentDidMount() {
+    this.getVehicles();
+    this.getPotentialBuyers();
+  }
   getVehicles() {
     // axios (GET)
+    //Invoke the promise to a variable
+    //Promises don't have value.
+    const promise = axios.get('https://joes-autos.herokuapp.com/api/vehicles')
     // setState with response -> vehiclesToDisplay
+    promise.then(res => {
+      this.setState(() => {
+        //Each axios response has a data object.
+        return {
+          vehiclesToDisplay: res.data
+        }
+      })
+    })
   }
 
   getPotentialBuyers() {
+    //Don't have to assign to axios request.
+    axios.get('https://joes-autos.herokuapp.com/api/buyers').then(r => {
+      this.setState(() => {
+        return {
+          buyersToDisplay: r.data
+        }
+      })
+    })
     // axios (GET)
     // setState with response -> buyersToDisplay
   }
 
   sellCar( id ) {
     // axios (DELETE)
+    const promise = axios.delete(`https://joes-autos.herokuapp.com/api/vehicles/${id}`);
+    promise.then(res => {
+      this.setState(() => {
+        return {
+          vehiclesToDisplay: res.data.vehicles,
+        }
+      })
+    })
     // setState with response -> vehiclesToDisplay
+    window.location.reload();
   }
 
   filterByMake() {
     let make = this.refs.selectedMake.value;
-
     // axios (GET)
     // setState with response -> vehiclesToDisplay
   }
@@ -59,10 +89,24 @@ class App extends Component {
 
   updatePrice( priceChange, id ) {
     // axios (PUT)
+    //axios has a second parameter such as a object, can be passed as the body.
+    //use the put method to update partial data in axios.
+    console.log('Before Increasing Price:', this.state.vehiclesToDisplay);
+    const promise = axios.put(`https://joes-autos.herokuapp.com/api/vehicles/${id}/${priceChange}`);
+    promise.then(res => {
+      this.setState(() => {
+        return {
+          vehiclesToDisplay: res.data.vehicles,
+        }
+      })
+      console.log('After Increasing Price:', this.state.vehiclesToDisplay);
+    })
+
     // setState with response -> vehiclesToDisplay
   }
 
   addCar() {
+    //
     let newCar = {
       make: this.refs.make.value,
       model: this.refs.model.value,
@@ -72,7 +116,22 @@ class App extends Component {
     };
 
     // axios (POST)
+    ///Pass in a new object in a post method to the body, to create new data.
+    const promise = axios.post('https://joes-autos.herokuapp.com/api/vehicles', {
+      "make": newCar.make,
+      "model": newCar.model,
+      "year": newCar.year,
+      "color": newCar.color,
+      "price": newCar.price,
+    })
+    //Use .then to have the promise function properly.
+    promise.then(res => {
+      this.setState({vehiclesToDisplay: res.data.vehicles})
+    }).catch(err => {
+      console.log('New Vehicle error', err); 
+    })
     // setState with response -> vehiclesToDisplay
+    window.location.reload();
   }
 
   addBuyer() {
@@ -88,6 +147,14 @@ class App extends Component {
 
   deleteBuyer( id ) {
     // axios (DELETE)
+    const promise = axios.delete(`https://joes-autos.herokuapp.com/api/buyers/${id}/`);
+    promise.then(res => {
+      this.setState(() => {
+        return {
+          buyersToDisplay: res.data.buyers,
+        }
+      })
+    })
     //setState with response -> buyersToDisplay
   }
 
@@ -95,6 +162,7 @@ class App extends Component {
     let searchLetters = this.refs.searchLetters.value;
 
     // axios (GET)
+    const promise = axios.get(`https://joes-autos.herokuapp.com/api/buyers`);
     // setState with response -> buyersToDisplay
   }
 
@@ -188,7 +256,7 @@ class App extends Component {
             Get All Vehicles
           </button>
 
-          <select onChange={ this.filterByMake }
+          <select onChange={this.filterByMake }
                   ref='selectedMake'
                   className='btn-sp'
                   value="">
