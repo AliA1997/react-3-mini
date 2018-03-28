@@ -76,15 +76,18 @@ class App extends Component {
 
   filterByMake() {
     let make = this.refs.selectedMake.value;
+    const promise = axios.get(`https://joes-autos.herokuapp.com/api/vehicles/?=${make}`)
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    window.location.reload();
   }
 
   filterByColor() {
     let color = this.refs.selectedColor.value;
-
+    const promise = axios.get(`https://joes-autos.herokuapp.com/api/vehicles/?=${color}`)
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    window.location.reload();
   }
 
   updatePrice( priceChange, id ) {
@@ -103,6 +106,7 @@ class App extends Component {
     })
 
     // setState with response -> vehiclesToDisplay
+    window.location.reload();  
   }
 
   addCar() {
@@ -143,6 +147,7 @@ class App extends Component {
 
     //axios (POST)
     // setState with response -> buyersToDisplay
+    window.location.reload();  
   }
 
   deleteBuyer( id ) {
@@ -156,21 +161,24 @@ class App extends Component {
       })
     })
     //setState with response -> buyersToDisplay
+    window.location.reload();
   }
 
   nameSearch() {
     let searchLetters = this.refs.searchLetters.value;
 
     // axios (GET)
-    const promise = axios.get(`https://joes-autos.herokuapp.com/api/buyers`);
+    const promise = axios.get(`https://joes-autos.herokuapp.com/api/buyers?=${searchLetters}`);
     // setState with response -> buyersToDisplay
+    window.location.reload();  
   }
 
   byYear() {
     let year = this.refs.searchYear.value;
-
+    const promise = axios.get(`https://joes-autos.herokuapp.com/api/vehicles/?=${year}`)
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    window.location.reload();
   }
 
   // Do not edit the code below
